@@ -1,7 +1,7 @@
 {
   "name": "@arraypress/countries",
-  "version": "1.0.0",
-  "description": "Country data utilities — names, flags, continents, EU membership, and search. ISO 3166-1 alpha-2.",
+  "version": "1.1.0",
+  "description": "Country data utilities \u2014 names, flags, continents, EU membership, calling codes, and search. ISO 3166-1 alpha-2.",
   "type": "module",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -11,15 +11,45 @@
       "types": "./src/index.d.ts"
     }
   },
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "test": "node --test tests/countries.test.js"
+    "test": "npm run lint && npm run typecheck && node --test tests/*.test.js && npm run duplication",
+    "lint": "eslint .",
+    "typecheck": "tsc -p . && tsc -p tsconfig.types.json && diff -r -x '*.js' .types src && rm -rf .types",
+    "types": "tsc -p tsconfig.types.json && cp -R .types/. src/ && rm -rf .types",
+    "duplication": "jscpd"
   },
-  "keywords": ["countries", "country", "iso-3166", "flag", "emoji", "continent", "eu"],
+  "keywords": [
+    "calling-code",
+    "continent",
+    "countries",
+    "country",
+    "dial-code",
+    "e164",
+    "emoji",
+    "eu",
+    "flag",
+    "iso-3166",
+    "phone"
+  ],
   "author": "David Sherlock",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/arraypress/countries"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "jscpd": "^5.4.3",
+    "typescript": "^7.0.2"
   }
 }

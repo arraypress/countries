@@ -1,5 +1,14 @@
 /**
+ * Country data for countries.js: ISO 3166-1 alpha-2 codes and English
+ * names, continents, and EU membership.
+ *
+ * @module data/countries
+ */
+
+/**
  * ISO 3166-1 alpha-2 country codes and names.
+ *
+ * @type {Readonly<Record<string, string>>}
  */
 export const countries = {
   AF: 'Afghanistan', AX: 'Åland Islands', AL: 'Albania', DZ: 'Algeria',
@@ -73,6 +82,8 @@ export const countries = {
 
 /**
  * Country → continent mapping.
+ *
+ * @type {Readonly<Record<string, string>>}
  */
 export const continents = {
   AF:'Asia',AM:'Asia',AZ:'Asia',BH:'Asia',BD:'Asia',BT:'Asia',BN:'Asia',KH:'Asia',
@@ -122,7 +133,11 @@ export const continents = {
   AQ:'Antarctica',BV:'Antarctica',TF:'Antarctica',HM:'Antarctica',GS:'Antarctica',
 };
 
-/** EU member states. */
+/**
+ * EU member states.
+ *
+ * @type {readonly string[]}
+ */
 export const euCountries = [
   'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR',
   'HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',

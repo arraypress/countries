@@ -1,34 +1,13 @@
 /**
- * @arraypress/countries — TypeScript definitions.
+ * @arraypress/countries
+ *
+ * Country data utilities — names, flags, continents, EU membership and
+ * calling codes. ISO 3166-1 alpha-2 codes. Designed for ecommerce,
+ * analytics, admin UIs and forms.
+ *
+ * Zero dependencies. Works in any JS runtime.
+ *
+ * @module @arraypress/countries
  */
-
-export interface Country {
-  code: string;
-  name: string;
-}
-
-export interface FormatOptions {
-  flag?: boolean;
-  code?: boolean;
-}
-
-/** Get country name from ISO code. Returns the code if not found. */
-export function getName(code: string): string;
-
-/** Get emoji flag for a country code. */
-export function getFlag(code: string): string;
-
-/** Format a country for display with optional flag and code. */
-export function format(code: string, options?: FormatOptions): string;
-
-/** Check if a country code is valid. */
-export function isValid(code: string): boolean;
-
-/** Get the continent for a country. */
-export function getContinent(code: string): string | null;
-
-/** Check if a country is in the EU. */
-export function isEU(code: string): boolean;
-
-/** Get all countries. */
-export function getAll(): Country[];
+export { format, getAll, getContinent, getFlag, getName, isEU, isValid } from './countries.js';
+export { findByDialCode, getDialCode, getDialCodes, getTrunkPrefix } from './dial-codes.js';
