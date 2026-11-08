@@ -6,6 +6,7 @@
  */
 
 import { continents, countries, euCountries } from './data/countries.js';
+import { getDialCode } from './dial-codes.js';
 
 /**
  * One country, as `getAll()` lists it.
@@ -37,7 +38,8 @@ export function getName(code) {
 }
 
 /**
- * Get emoji flag for a country code.
+ * Get emoji flag for a country code. Ascension (AC) and Tristan da Cunha
+ * (TA), which `getDialCodes()` lists, have flags too.
  *
  * @param {string | null | undefined} code - ISO 3166-1 alpha-2 code.
  * @returns {string} Emoji flag or empty string.
@@ -45,11 +47,12 @@ export function getName(code) {
  * @example
  * getFlag('US')  // '🇺🇸'
  * getFlag('GB')  // '🇬🇧'
+ * getFlag('AC')  // '🇦🇨'
  */
 export function getFlag(code) {
     if (!code || typeof code !== 'string' || code.length !== 2) return '';
     const upper = code.toUpperCase();
-    if (!countries[upper]) return '';
+    if (!countries[upper] && !getDialCode(upper)) return '';
     return String.fromCodePoint(
         ...upper.split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)
     );

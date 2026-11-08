@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `getFlag` also gives Ascension's and Tristan da Cunha's flags (AC, TA), the two phone regions that aren't ISO countries.
 - The type declarations are generated from the JSDoc (`npm run types`), and `npm test` also lints, type-checks and checks for copied code.
 - Source split into `src/countries.js`, `src/dial-codes.js` and `src/data/`; the public API is unchanged.
 

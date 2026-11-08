@@ -3,4 +3,5 @@ node_modules/
 *.tgz
 .idea/
 .vscode/
-coverage/.types/
+coverage/
+.types/

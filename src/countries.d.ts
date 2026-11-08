@@ -36,7 +36,8 @@ export type FormatOptions = {
  */
 export declare function getName(code: string | null | undefined): string;
 /**
- * Get emoji flag for a country code.
+ * Get emoji flag for a country code. Ascension (AC) and Tristan da Cunha
+ * (TA), which `getDialCodes()` lists, have flags too.
  *
  * @param {string | null | undefined} code - ISO 3166-1 alpha-2 code.
  * @returns {string} Emoji flag or empty string.
@@ -44,6 +45,7 @@ export declare function getName(code: string | null | undefined): string;
  * @example
  * getFlag('US')  // '🇺🇸'
  * getFlag('GB')  // '🇬🇧'
+ * getFlag('AC')  // '🇦🇨'
  */
 export declare function getFlag(code: string | null | undefined): string;
 /**

@@ -5,7 +5,7 @@
 
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { findByDialCode, getAll, getDialCode, getDialCodes, getTrunkPrefix } from '../src/index.js';
+import { findByDialCode, getAll, getDialCode, getDialCodes, getFlag, getTrunkPrefix } from '../src/index.js';
 
 describe('getDialCode', () => {
   const cases = [['GB', '+44'], ['US', '+1'], ['JM', '+1'], ['DE', '+49'], ['IN', '+91'], ['AQ', '+672'], ['XK', '+383'], ['AC', '+247']];
@@ -47,6 +47,11 @@ describe('getDialCodes', () => {
     for (const [dialCode, entries = []] of Object.entries(shared)) {
       if (entries.length > 1) assert.equal(entries.filter((entry) => entry.main).length, 1, dialCode);
     }
+  });
+
+  it('every region listed has a flag, Ascension and Tristan da Cunha included', () => {
+    assert.deepEqual(getDialCodes().filter(({ code }) => !getFlag(code)), []);
+    assert.equal(getFlag('AC'), '🇦🇨');
   });
 
   it('is a copy', () => {
