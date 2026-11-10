@@ -13,7 +13,7 @@ npm install @arraypress/countries
 ## Usage
 
 ```js
-import { getName, getFlag, format, isValid, getContinent, isEU, getAll, getDialCode, findByDialCode } from '@arraypress/countries';
+import { getName, getFlag, format, isValid, getContinent, isEU, getAll, getDialCode, findByDialCode, getCurrency } from '@arraypress/countries';
 
 // Look up names
 getName('US')   // 'United States'
@@ -48,6 +48,11 @@ getDialCode('GB')                   // '+44'
 getTrunkPrefix('GB')                // '0' (the "0" of "07700 900000")
 findByDialCode('+44 7700 900000')   // { code: 'GB', dialCode: '+44', national: '7700 900000', codes: ['GB', 'GG', 'IM', 'JE'] }
 findByDialCode('+1 876 555 0100')   // { code: 'JM', … }: the area code names the island
+
+// Currencies
+getCurrency('GB')   // 'GBP'
+getCurrency('BG')   // 'EUR' (since January 2026)
+getCurrency('EU')   // 'EUR' (for the .eu domain)
 ```
 
 ## API
@@ -96,7 +101,13 @@ Every region with a calling code, sorted: `[{ code, dialCode, trunkPrefix, main 
 
 The region an international number belongs to. Accepts `+44 7700 900000`, `0044 7700 900000` and `+44 (0)7700 900000`; a national number gives `null`. Returns `{ code, dialCode, national, codes }`: `national` is the rest as written (without a "(0)"), `codes` every region sharing the code. `code` is `preferred` when it shares the code, else the region a +1 area code names (+1 876 is Jamaica), else the code's main region.
 
+### `getCurrency(code: string): string | null`
+
+The ISO 4217 code a country's prices are in today: `'GBP'`, `'CAD'`. Also `EU` (the euro), AC, TA and XK. `null` for an unknown code (and Antarctica).
+
 ## Data sources
+
+Currencies come from the Unicode [CLDR](https://github.com/unicode-org/cldr-json) 49 (`supplemental/currencyData.json`), Unicode License v3, extracted November 2026: each region's first current legal tender.
 
 Calling codes, trunk prefixes and main regions come from Google's [libphonenumber](https://github.com/google/libphonenumber) (`resources/PhoneNumberMetadata.xml`), Apache License 2.0, Copyright (C) 2009 The Libphonenumber Authors, extracted November 2026. Seven ISO regions with no numbering plan of their own in libphonenumber take the ITU code they dial through: AQ +672, BV +47, GS +500, HM +672, PN +64, TF +262, UM +1.
 

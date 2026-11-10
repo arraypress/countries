@@ -1,7 +1,7 @@
 {
   "name": "@arraypress/countries",
-  "version": "1.1.0",
-  "description": "Country data utilities \u2014 names, flags, continents, EU membership, calling codes, and search. ISO 3166-1 alpha-2.",
+  "version": "1.2.0",
+  "description": "Country data utilities \u2014 names, flags, continents, EU membership, calling codes, currencies, and search. ISO 3166-1 alpha-2.",
   "type": "module",
   "main": "src/index.js",
   "types": "src/index.d.ts",
