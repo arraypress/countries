@@ -28,6 +28,33 @@ describe('getName', () => {
 
 // ── getFlag ─────────────────────────────────
 
+describe('names, continents and flags that were wrong or missing (1.2.1)', () => {
+  it('Palau and Sint Maarten go by their names', () => {
+    assert.equal(getName('PW'), 'Palau');
+    assert.equal(getName('SX'), 'Sint Maarten');
+    assert.equal(getName('MF'), 'Saint Martin (French part)');
+    const names = getAll().map(({ name }) => name);
+    assert.ok(names.indexOf('Palau') > names.indexOf('Pakistan') && names.indexOf('Palau') < names.indexOf('Panama'));
+    assert.ok(names.indexOf('Sint Maarten') > names.indexOf('Singapore') && names.indexOf('Sint Maarten') < names.indexOf('Slovakia'));
+  });
+
+  it('every country has a continent', () => {
+    for (const { code } of getAll()) assert.ok(getContinent(code), code);
+    assert.equal(getContinent('IO'), 'Asia');
+    assert.equal(getContinent('CX'), 'Asia');
+    assert.equal(getContinent('CC'), 'Asia');
+    assert.equal(getContinent('UM'), 'Oceania');
+  });
+
+  it('the regions with a currency of their own have flags', () => {
+    assert.equal(getFlag('EU'), '🇪🇺');
+    assert.equal(getFlag('ea'), '🇪🇦');
+    assert.equal(getFlag('IC'), '🇮🇨');
+    assert.equal(getFlag('ZZ'), '');
+    assert.equal(getFlag('UK'), '');
+  });
+});
+
 describe('getFlag', () => {
   it('US → 🇺🇸', () => assert.equal(getFlag('US'), '🇺🇸'));
   it('GB → 🇬🇧', () => assert.equal(getFlag('GB'), '🇬🇧'));

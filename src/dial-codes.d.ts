@@ -77,8 +77,10 @@ export declare function getTrunkPrefix(code: string): string;
 export declare function getDialCodes(): DialCode[];
 /**
  * The region an international number belongs to, and the rest of it.
- * Accepts "+44 7700 900000", "0044 7700 900000" and "+44 (0)7700 900000";
- * a number without "+" or "00" isn't international, so it's `null`.
+ * Accepts "+44 7700 900000", "0044 7700 900000", "+44 (0)7700 900000",
+ * "(+44) 7700 900000", "tel:+447700900000" and a number with an extension
+ * ("+44 20 7946 0958 ext. 12", which `national` leaves out); a number
+ * without "+" or "00" isn't international, so it's `null`.
  *
  * Why `codes`: several regions share some codes (+44 is GB, GG, IM and JE),
  * and only the caller knows which it wants; `preferred` picks it when it's
@@ -92,6 +94,7 @@ export declare function getDialCodes(): DialCode[];
  * findByDialCode('+44 7700 900000')        // { code: 'GB', dialCode: '+44', national: '7700 900000', codes: ['GB', 'GG', 'IM', 'JE'] }
  * findByDialCode('+44 7700 900000', 'JE')  // { code: 'JE', … }
  * findByDialCode('+1 876 555 0100')        // { code: 'JM', dialCode: '+1', national: '876 555 0100', codes: ['JM'] }
+ * findByDialCode('+7 701 123 4567')        // { code: 'KZ', dialCode: '+7', national: '701 123 4567', codes: ['KZ'] }
  * findByDialCode('07700 900000')           // null
  */
 export declare function findByDialCode(text: string, preferred?: string): DialMatch | null;

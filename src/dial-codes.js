@@ -7,7 +7,7 @@
  * @module dial-codes
  */
 
-import { DIAL_TABLE, NANP_AREA_CODES } from './data/dial-codes.js';
+import { DIAL_TABLE, NANP_AREA_CODES, REGION_PREFIXES } from './data/dial-codes.js';
 
 /**
  * One region's calling code.
@@ -105,7 +105,7 @@ export function getDialCodes() {
 function afterDigits(text, count) {
   let seen = 0;
   for (let i = 0; i < text.length; i++) {
-    if (/\d/.test(text[i]) && ++seen === count) return text.slice(i + 1).replace(/^[\s\-.]+/, '').trim();
+    if (/\d/.test(text[i]) && ++seen === count) return text.slice(i + 1).replace(/^[\s\-.)]+/, '').trim();
   }
   return '';
 }
@@ -125,9 +125,32 @@ function nanpRegions(sharing, rest) {
 }
 
 /**
+ * The regions of a shared code a number can be in: the ones whose own
+ * leading digits it starts with ({@link REGION_PREFIXES}: "+7 701…" is
+ * Kazakhstan), else all of them.
+ *
+ * @param {readonly DialCode[]} sharing - Every region of the code.
+ * @param {string} dialCode - The code, e.g. "+7".
+ * @param {string} rest - The digits after it.
+ * @returns {readonly DialCode[]}
+ */
+function prefixRegions(sharing, dialCode, rest) {
+  const named = Object.entries(REGION_PREFIXES[dialCode] ?? {})
+    .filter(([, prefixes]) => prefixes.some((/** @type {string} */ prefix) => rest.startsWith(prefix)))
+    .map(([code]) => code);
+  const own = sharing.filter(({ code }) => named.includes(code));
+  return own.length ? own : sharing;
+}
+
+/** An international number as people write it: "tel:" or brackets around the code, an extension after it. */
+const INTERNATIONAL = /^\s*(?:tel:)?\s*\(?\s*(?:\+|00)\s*(\d[\d\s\-().]*?)\s*(?:(?:ext\.?|x|#)\s*\d+)?\s*$/i;
+
+/**
  * The region an international number belongs to, and the rest of it.
- * Accepts "+44 7700 900000", "0044 7700 900000" and "+44 (0)7700 900000";
- * a number without "+" or "00" isn't international, so it's `null`.
+ * Accepts "+44 7700 900000", "0044 7700 900000", "+44 (0)7700 900000",
+ * "(+44) 7700 900000", "tel:+447700900000" and a number with an extension
+ * ("+44 20 7946 0958 ext. 12", which `national` leaves out); a number
+ * without "+" or "00" isn't international, so it's `null`.
  *
  * Why `codes`: several regions share some codes (+44 is GB, GG, IM and JE),
  * and only the caller knows which it wants; `preferred` picks it when it's
@@ -141,10 +164,11 @@ function nanpRegions(sharing, rest) {
  * findByDialCode('+44 7700 900000')        // { code: 'GB', dialCode: '+44', national: '7700 900000', codes: ['GB', 'GG', 'IM', 'JE'] }
  * findByDialCode('+44 7700 900000', 'JE')  // { code: 'JE', … }
  * findByDialCode('+1 876 555 0100')        // { code: 'JM', dialCode: '+1', national: '876 555 0100', codes: ['JM'] }
+ * findByDialCode('+7 701 123 4567')        // { code: 'KZ', dialCode: '+7', national: '701 123 4567', codes: ['KZ'] }
  * findByDialCode('07700 900000')           // null
  */
 export function findByDialCode(text, preferred = '') {
-  const match = /^\s*(?:\+|00)\s*(\d[\d\s\-().]*)$/.exec(String(text ?? ''));
+  const match = INTERNATIONAL.exec(String(text ?? ''));
   if (!match) return null;
   const digits = match[1].replace(/\D/g, '');
   for (let length = LONGEST_CODE; length >= 1; length--) {
@@ -152,6 +176,7 @@ export function findByDialCode(text, preferred = '') {
     let sharing = DIAL_CODES.filter((entry) => entry.dialCode === dialCode);
     if (!sharing.length) continue;
     if (dialCode === '+1') sharing = nanpRegions(sharing, digits.slice(1));
+    sharing = [...prefixRegions(sharing, dialCode, digits.slice(length))];
     const wanted = String(preferred ?? '').toUpperCase();
     const pick = sharing.find((entry) => entry.code === wanted) ?? sharing.find((entry) => entry.main) ?? sharing[0];
     const national = afterDigits(match[1], length).replace(/^\(0\)\s*/, '').trim();

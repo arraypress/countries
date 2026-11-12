@@ -37,7 +37,9 @@ export type FormatOptions = {
 export declare function getName(code: string | null | undefined): string;
 /**
  * Get emoji flag for a country code. Ascension (AC) and Tristan da Cunha
- * (TA), which `getDialCodes()` lists, have flags too.
+ * (TA), which `getDialCodes()` lists, have flags too, and so do the regions
+ * `getCurrency()` knows beside the countries: the European Union (EU),
+ * Ceuta and Melilla (EA), the Canary Islands (IC) and Diego Garcia (DG).
  *
  * @param {string | null | undefined} code - ISO 3166-1 alpha-2 code.
  * @returns {string} Emoji flag or empty string.
@@ -46,6 +48,7 @@ export declare function getName(code: string | null | undefined): string;
  * getFlag('US')  // '🇺🇸'
  * getFlag('GB')  // '🇬🇧'
  * getFlag('AC')  // '🇦🇨'
+ * getFlag('EU')  // '🇪🇺'
  */
 export declare function getFlag(code: string | null | undefined): string;
 /**

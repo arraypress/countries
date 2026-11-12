@@ -48,6 +48,36 @@ AQ 672|BV 47|GS 500|HM 672|PN 64|TF 262|UM 1
 `;
 
 /**
+ * Regions that share a calling code and can be told by how the national
+ * number starts: calling code → region → the leading digits that are its
+ * alone. "+7 7…" and "+7 6…" are Kazakhstan, "+1 416" is Canada, "+44 1534"
+ * is Jersey. A number that starts with none of them stays with every region
+ * of its code. From libphonenumber's `leadingDigits` and the Canadian
+ * Numbering Administrator's area codes in service.
+ *
+ * @type {Readonly<Record<string, Readonly<Record<string, readonly string[]>>>>}
+ */
+export const REGION_PREFIXES = Object.freeze({
+  '+1': {
+    CA: [
+      '204', '226', '236', '249', '250', '263', '289', '306', '343', '354', '365', '367', '368', '382', '403', '416', '418',
+      '428', '431', '437', '438', '450', '468', '474', '506', '514', '519', '548', '579', '581', '584', '587', '604', '613',
+      '639', '647', '672', '683', '705', '709', '742', '753', '778', '780', '782', '807', '819', '825', '867', '873', '879',
+      '902', '905',
+    ],
+  },
+  '+7': { KZ: ['6', '7'] },
+  '+39': { VA: ['06698'] },
+  '+44': { GG: ['1481'], JE: ['1534'], IM: ['1624'] },
+  '+47': { SJ: ['79'] },
+  '+212': { EH: ['5288', '5289'] },
+  '+262': { YT: ['269', '639'] },
+  '+358': { AX: ['18'] },
+  '+599': { CW: ['9'], BQ: ['3', '4', '7'] },
+  '+672': { AQ: ['1'], NF: ['3'] },
+});
+
+/**
  * North American Numbering Plan members other than the US and Canada, by
  * their area codes: "+1 876" is Jamaica. The US and Canada share every other
  * +1 area code, so a number there stays theirs to tell apart.

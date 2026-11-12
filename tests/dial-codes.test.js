@@ -83,15 +83,57 @@ describe('findByDialCode', () => {
   it('+1: the area code names a Caribbean or Pacific member; otherwise the US, or Canada if preferred', () => {
     assert.deepEqual(findByDialCode('+1 876 555 0100'), { code: 'JM', dialCode: '+1', national: '876 555 0100', codes: ['JM'] });
     assert.equal(findByDialCode('+1 (809) 555-0100')?.code, 'DO');
-    const toronto = findByDialCode('+1 416 555 0100', 'CA');
-    assert.equal(toronto?.code, 'CA');
-    assert.ok(toronto?.codes.includes('US'));
-    assert.equal(findByDialCode('+1 415 555 0100')?.code, 'US');
+    assert.deepEqual(findByDialCode('+1 415 555 0100'), { code: 'US', dialCode: '+1', national: '415 555 0100', codes: ['CA', 'UM', 'US'] });
+    // An area code neither table names stays the US's or Canada's to choose.
+    assert.equal(findByDialCode('+1 415 555 0100', 'CA')?.code, 'CA');
   });
 
   it('a shared code with no main region of its own picks the marked one', () => {
     assert.equal(findByDialCode('+672 3 12345')?.code, 'NF');
     assert.equal(findByDialCode('+64 21 123 4567')?.code, 'NZ');
+  });
+
+  it('a region with leading digits of its own is told from the ones it shares a code with', () => {
+    /** @type {[string, string, string[]][]} */
+    const cases = [
+      ['+7 701 123 4567', 'KZ', ['KZ']],
+      ['+7 6012 34 56 78', 'KZ', ['KZ']],
+      ['+7 495 123 4567', 'RU', ['KZ', 'RU']],
+      ['+1 416 555 0100', 'CA', ['CA']],
+      ['+1 (604) 555-0100', 'CA', ['CA']],
+      ['+1 867 555 0100', 'CA', ['CA']],
+      ['+1 212 555 0100', 'US', ['CA', 'UM', 'US']],
+      ['+44 1534 123456', 'JE', ['JE']],
+      ['+44 1481 123456', 'GG', ['GG']],
+      ['+44 1624 123456', 'IM', ['IM']],
+      ['+44 20 7946 0958', 'GB', ['GB', 'GG', 'IM', 'JE']],
+      ['+39 06 6988 1234', 'VA', ['VA']],
+      ['+39 06 1234 5678', 'IT', ['IT', 'VA']],
+      ['+599 9 123 4567', 'CW', ['CW']],
+      ['+599 717 1234', 'BQ', ['BQ']],
+      ['+262 269 60 12 34', 'YT', ['YT']],
+      ['+262 262 12 34 56', 'RE', ['RE', 'TF', 'YT']],
+      ['+358 18 12345', 'AX', ['AX']],
+      ['+47 79 02 12 34', 'SJ', ['SJ']],
+      ['+212 5288 12345', 'EH', ['EH']],
+      ['+672 1 12345', 'AQ', ['AQ']],
+    ];
+    for (const [number, code, codes] of cases) {
+      const found = findByDialCode(number);
+      assert.equal(found?.code, code, number);
+      assert.deepEqual(found?.codes, codes, number);
+    }
+    // A preference among the regions left still wins; one ruled out doesn't.
+    assert.equal(findByDialCode('+7 495 123 4567', 'KZ')?.code, 'KZ');
+    assert.equal(findByDialCode('+7 701 123 4567', 'RU')?.code, 'KZ');
+  });
+
+  it('reads a number as links and people write it: tel:, brackets round the code, an extension', () => {
+    assert.deepEqual(findByDialCode('tel:+442079460958'), { code: 'GB', dialCode: '+44', national: '2079460958', codes: ['GB', 'GG', 'IM', 'JE'] });
+    assert.equal(findByDialCode('(+44) 20 7946 0958')?.national, '20 7946 0958');
+    assert.equal(findByDialCode('+44 20 7946 0958 ext. 12')?.national, '20 7946 0958');
+    assert.equal(findByDialCode('+1 415 555 0100 x204')?.national, '415 555 0100');
+    assert.equal(findByDialCode('+44 20 7946 0958 extra'), null);
   });
 
   it('null for a national number, junk, or an unknown code', () => {

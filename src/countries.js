@@ -6,6 +6,7 @@
  */
 
 import { continents, countries, euCountries } from './data/countries.js';
+import { getCurrency } from './currencies.js';
 import { getDialCode } from './dial-codes.js';
 
 /**
@@ -39,7 +40,9 @@ export function getName(code) {
 
 /**
  * Get emoji flag for a country code. Ascension (AC) and Tristan da Cunha
- * (TA), which `getDialCodes()` lists, have flags too.
+ * (TA), which `getDialCodes()` lists, have flags too, and so do the regions
+ * `getCurrency()` knows beside the countries: the European Union (EU),
+ * Ceuta and Melilla (EA), the Canary Islands (IC) and Diego Garcia (DG).
  *
  * @param {string | null | undefined} code - ISO 3166-1 alpha-2 code.
  * @returns {string} Emoji flag or empty string.
@@ -48,11 +51,12 @@ export function getName(code) {
  * getFlag('US')  // '🇺🇸'
  * getFlag('GB')  // '🇬🇧'
  * getFlag('AC')  // '🇦🇨'
+ * getFlag('EU')  // '🇪🇺'
  */
 export function getFlag(code) {
     if (!code || typeof code !== 'string' || code.length !== 2) return '';
     const upper = code.toUpperCase();
-    if (!countries[upper] && !getDialCode(upper)) return '';
+    if (!countries[upper] && !getDialCode(upper) && !getCurrency(upper)) return '';
     return String.fromCodePoint(
         ...upper.split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)
     );

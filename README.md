@@ -48,6 +48,7 @@ getDialCode('GB')                   // '+44'
 getTrunkPrefix('GB')                // '0' (the "0" of "07700 900000")
 findByDialCode('+44 7700 900000')   // { code: 'GB', dialCode: '+44', national: '7700 900000', codes: ['GB', 'GG', 'IM', 'JE'] }
 findByDialCode('+1 876 555 0100')   // { code: 'JM', … }: the area code names the island
+findByDialCode('+7 701 123 4567')   // { code: 'KZ', … }: so do Kazakhstan's digits under +7, Canada's area codes, Jersey's under +44
 
 // Currencies
 getCurrency('GB')   // 'GBP'
