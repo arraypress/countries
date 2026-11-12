@@ -5,7 +5,13 @@ All notable changes to `@arraypress/countries` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.1] — Unreleased
+## [1.2.2] — Unreleased
+
+### Fixed
+
+- Canada’s newest area codes, 257 (British Columbia) and 942 (Toronto), both in service since 2025, are Canada’s in `REGION_PREFIXES`, so `findByDialCode` no longer reads those numbers as the US’s. The list was checked against the area codes now in service.
+
+## [1.2.1] — 2026-11-12
 
 ### Fixed
 
